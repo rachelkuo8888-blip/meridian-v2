@@ -1,0 +1,5 @@
+# Core calculation engine - zero external dependencies for core logic
+# Server runtime uses Python stdlib only (http.server)
+
+# For development only:
+# pytest>=7.0
