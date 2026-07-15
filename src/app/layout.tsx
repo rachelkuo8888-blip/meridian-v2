@@ -1,8 +1,31 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, Merriweather, IBM_Plex_Mono } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import { QueryClientProvider } from '@/lib/query-client';
 import { RootLayout as AppShell } from '@/components/layout/root-layout';
 import './globals.css';
+
+// Google Fonts with next/font (self-hosted, no external requests)
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  weight: ['300', '400', '500', '600'],
+});
+
+const merriweather = Merriweather({
+  subsets: ['latin'],
+  variable: '--font-merriweather',
+  display: 'swap',
+  weight: ['300', '400', '700'],
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  variable: '--font-ibm-plex-mono',
+  display: 'swap',
+  weight: ['400', '500'],
+});
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -63,19 +86,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Preload critical fonts */}
-        <link
-          rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:wght@300;400;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
-          as="style"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:wght@300;400;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${merriweather.variable} ${ibmPlexMono.variable}`}
+    >
       <body>
         <ThemeProvider
           attribute="class"

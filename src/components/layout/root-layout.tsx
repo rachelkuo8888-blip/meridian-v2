@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
 /**
  * Root layout shell for Meridian.
@@ -9,12 +9,6 @@ import { cn } from '@/lib/utils'
  * Supports both ivory (default) and dark mode backgrounds per Brand Guide.
  */
 export function RootLayout({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
   return (
     <div
       className={cn(
@@ -38,23 +32,20 @@ export function RootLayout({ children }: { children: React.ReactNode }) {
       {/* Skip to main content (accessibility) */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-meridian-black focus:px-4 focus:py-2 focus:text-meridian-ivory"
+        className="focus:bg-meridian-black focus:text-meridian-ivory sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-sm focus:px-4 focus:py-2"
       >
         Skip to main content
       </a>
 
       {/* App content */}
-      <main
-        id="main-content"
-        className="flex-1"
-      >
+      <main id="main-content" className="flex-1">
         {children}
       </main>
 
-      {/* Hidden analytics placeholder — activate when analytics tool is selected */}
-      {mounted && process.env.NEXT_PUBLIC_ANALYTICS_ID && (
+      {/* Analytics placeholder — uncomment when analytics tool is selected */}
+      {/* {process.env.NEXT_PUBLIC_ANALYTICS_ID && (
         <div id="analytics-placeholder" aria-hidden="true" />
-      )}
+      )} */}
     </div>
-  )
+  );
 }
