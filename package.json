@@ -7,14 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-"migrate": "tsx src/db/migrate.ts",
-"test": "vitest run",
-"test:watch": "vitest"
+    "migrate": "tsx src/db/migrate.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.5",
     "@tanstack/react-query": "^5.101.2",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "ioredis": "^5.11.1",
