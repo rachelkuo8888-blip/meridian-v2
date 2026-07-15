@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+"migrate": "tsx src/db/migrate.ts",
+"test": "vitest run",
+"test:watch": "vitest"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
@@ -40,7 +43,13 @@
     "prettier": "^3.9.5",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4",
+    "tsx": "^4.23.1",
     "typescript": "^5",
     "vitest": "^4.1.10"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
