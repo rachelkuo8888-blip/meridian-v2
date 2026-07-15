@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { // useOnboardingStore } from '@/stores/onboarding';
+// import { useOnboardingStore } from '@/stores/onboarding';
 import { ProgressDots } from './progress-dots';
 
 interface ScreenWrapperProps {
