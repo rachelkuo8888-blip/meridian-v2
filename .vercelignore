@@ -1,0 +1,5 @@
+services/
+knowledge/
+*.md
+docs/
+scripts/
