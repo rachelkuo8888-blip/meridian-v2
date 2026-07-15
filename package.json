@@ -10,7 +10,10 @@
     "migrate": "tsx src/db/migrate.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy:vercel": "vercel --prod",
+    "deploy:docker": "docker compose up -d --build",
+    "db:migrate": "node scripts/migrate.js"
   },
   "dependencies": {
     "@sentry/nextjs": "^10.65.0",

@@ -1,22 +1,23 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
 
 /**
- * Middleware for session refresh and route protection.
- * - Refreshes the Supabase auth session on every request
- * - Redirects authenticated users away from login pages
- * - Redirects unauthenticated users to login for protected routes
+ * Middleware — protected route guard.
+ * Skips auth until Supabase is fully configured.
  */
 export async function middleware(request: NextRequest) {
-  // Skip auth until Supabase is configured
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  // If Supabase not configured, allow all traffic
+  if (!supabaseUrl) {
     return NextResponse.next({ request });
   }
 
+  // Dynamic import of Supabase SSR client (only when configured)
+  const { createServerClient } = await import('@supabase/ssr');
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    supabaseUrl,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
@@ -24,46 +25,31 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
+          cookiesToSet.forEach(({ name, value, options }) =>
+            request.cookies.set(name, value)
           );
           supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value }) =>
-            supabaseResponse.cookies.set(name, value),
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
           );
         },
       },
-    },
+    }
   );
 
-  // Refresh session — important for Server Components
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   // Protected routes: require auth
-  const protectedPaths = [
-    '/today',
-    '/coach',
-    '/blueprint',
-    '/learn',
-    '/onboarding',
-  ];
-  const isProtected = protectedPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path),
+  const protectedPaths = ['/blueprint', '/coach', '/today', '/learn', '/beta/dashboard', '/analytics'];
+  const isProtected = protectedPaths.some((p) =>
+    request.nextUrl.pathname.startsWith(p)
   );
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = '/';
-    url.searchParams.set('redirect', request.nextUrl.pathname);
-    return NextResponse.redirect(url);
-  }
-
-  // Redirect authenticated users away from auth pages
-  if (request.nextUrl.pathname === '/' && user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/today';
+    url.pathname = '/auth/login';
     return NextResponse.redirect(url);
   }
 
@@ -72,13 +58,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - auth callback (handled separately)
-     */
-    '/((?!_next/static|_next/image|favicon.ico|auth/callback|_next/data|public).*)',
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|sw.js|icons/|api/).*)',
   ],
 };
