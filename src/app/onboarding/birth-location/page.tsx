@@ -21,12 +21,11 @@ export default function BirthLocationPage() {
   const [selectedCity, setSelectedCity] = React.useState<CityData | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [mounted, setMounted] = React.useState(false);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-    React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;

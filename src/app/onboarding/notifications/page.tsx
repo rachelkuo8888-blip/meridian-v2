@@ -9,12 +9,11 @@ export default function NotificationsPage() {
   const router = useRouter();
   const { completeOnboarding } = useOnboardingStore();
   const [time, setTime] = React.useState('08:00');
-  const [mounted, setMounted] = React.useState(false);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-    React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const handleStart = () => {
     // Store notification preference

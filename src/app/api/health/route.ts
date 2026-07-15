@@ -21,7 +21,7 @@ export async function GET() {
     results.calculation = calcRes.ok
       ? { status: 'ok', ...(await calcRes.json()) }
       : { status: 'error', message: `HTTP ${calcRes.status}` };
-  } catch (err) {
+  } catch {
     results.calculation = { status: 'error', message: 'Unreachable' };
   }
 
@@ -33,7 +33,7 @@ export async function GET() {
     results.memory = memRes.ok
       ? { status: 'ok', ...(await memRes.json()) }
       : { status: 'error', message: `HTTP ${memRes.status}` };
-  } catch (err) {
+  } catch {
     results.memory = { status: 'error', message: 'Unreachable' };
   }
 

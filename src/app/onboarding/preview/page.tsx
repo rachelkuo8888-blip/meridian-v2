@@ -30,12 +30,11 @@ export default function PreviewPage() {
   const router = useRouter();
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = React.useState(0);
-  const [mounted, setMounted] = React.useState(false);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-    React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const handleScroll = () => {
     if (!scrollRef.current) return;

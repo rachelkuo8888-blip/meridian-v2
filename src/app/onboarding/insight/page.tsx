@@ -15,12 +15,11 @@ const PLACEHOLDER_ELEMENT_DISTRIBUTION = {
 
 export default function InsightPage() {
   const router = useRouter();
-  const [mounted, setMounted] = React.useState(false);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-    React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const handleContinue = () => {
     router.push('/onboarding/preview');

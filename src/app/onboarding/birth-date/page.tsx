@@ -9,12 +9,11 @@ import { useOnboardingStore } from '@/stores/onboarding';
 export default function BirthDatePage() {
   const router = useRouter();
   const { birthDate, setBirthDate } = useOnboardingStore();
-  const [mounted, setMounted] = React.useState(false);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-    React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const handleContinue = () => {
     if (birthDate) {

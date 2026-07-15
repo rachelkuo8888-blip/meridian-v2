@@ -12,12 +12,11 @@ const FEATURES = [
 
 export default function TrialPage() {
   const router = useRouter();
-  const [mounted, setMounted] = React.useState(false);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-    React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const handleStartTrial = () => {
     router.push('/onboarding/notifications');

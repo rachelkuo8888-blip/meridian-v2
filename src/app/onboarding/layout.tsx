@@ -15,15 +15,13 @@ export default function OnboardingLayout({
 }) {
   const router = useRouter();
   const onboardingCompleted = useOnboardingStore((s) => s.onboardingCompleted);
-  const [mounted, setMounted] = React.useState(false);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-    React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-    React.useEffect(() => {
+  React.useEffect(() => {
     if (mounted && onboardingCompleted) {
       router.replace('/today');
     }
