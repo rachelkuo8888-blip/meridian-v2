@@ -3,6 +3,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { learningPaths, getTotalLessonCount } from '@/data/learn-content'
+import { track } from '@/lib/analytics/tracker'
 
 interface LearnState {
   /** Set of completed lesson IDs (format: "pathId/lessonId") */
@@ -34,14 +35,24 @@ export const useLearnStore = create<LearnState>()(
 
       completeLesson: (pathId: string, lessonId: string) => {
         const key = lessonKey(pathId, lessonId)
+        const wasAlreadyCompleted = get().completedLessons.includes(key)
+        const beforeBadges = get().getEarnedBadgeIds().length
         set((state) => ({
-          completedLessons: state.completedLessons.includes(key)
+          completedLessons: wasAlreadyCompleted
             ? state.completedLessons
             : [...state.completedLessons, key],
           startedPaths: state.startedPaths.includes(pathId)
             ? state.startedPaths
             : [...state.startedPaths, pathId],
         }))
+        if (!wasAlreadyCompleted) {
+          track('lesson_complete', { pathId, lessonId })
+          // Check if any new badges were earned
+          const afterBadges = get().getEarnedBadgeIds().length
+          if (afterBadges > beforeBadges) {
+            track('badge_earned', { pathId, count: afterBadges - beforeBadges })
+          }
+        }
       },
 
       setQuizScore: (quizId: string, score: number) => {

@@ -1,0 +1,55 @@
+# Meridian V2 ─ Production docker-compose
+
+services:
+  # ── Frontend (Next.js) ──
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file: .env.production
+    depends_on:
+      redis:
+        condition: service_started
+      calculation-engine:
+        condition: service_started
+      memory-engine:
+        condition: service_started
+    restart: unless-stopped
+
+  # ── Calculation Engine (Python) ──
+  calculation-engine:
+    build:
+      context: ./services/calculation
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  # ── Memory Engine (Python) ──
+  memory-engine:
+    build:
+      context: ./services/memory
+      dockerfile: Dockerfile
+    ports:
+      - "8300:8300"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+    depends_on:
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # ── Redis ──
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  redis_data:

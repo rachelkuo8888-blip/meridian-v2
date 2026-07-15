@@ -17,8 +17,7 @@ import type {
   CooldownState,
 } from './types';
 import { getCooldownState } from './trigger-engine';
-type SupabaseClient = ReturnType<typeof createClient>;
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { calcClient } from '@/lib/services/calc-client';
 import { getRedis } from '@/lib/redis';
 import type { NatalChart } from '@/types/chart';

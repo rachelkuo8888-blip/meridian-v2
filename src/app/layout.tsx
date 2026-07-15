@@ -3,6 +3,7 @@ import { Inter, Merriweather, IBM_Plex_Mono } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import { QueryClientProvider } from '@/lib/query-client';
 import { RootLayout as AppShell } from '@/components/layout/root-layout';
+import { SwRegister } from '@/components/layout/sw-register';
 import './globals.css';
 
 // Google Fonts with next/font (self-hosted, no external requests)
@@ -101,6 +102,7 @@ export default function RootLayout({
           <QueryClientProvider>
             <AppShell>{children}</AppShell>
           </QueryClientProvider>
+          <SwRegister />
         </ThemeProvider>
       </body>
     </html>

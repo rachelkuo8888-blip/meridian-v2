@@ -72,6 +72,73 @@ export async function redisHealthCheck(): Promise<{
 }
 
 /**
+ * Cache get: retrieve a value from Redis by key.
+ * Returns parsed JSON or null on miss/error.
+ * Gracefully falls through if Redis is unavailable.
+ */
+export async function cacheGet<T = unknown>(
+  key: string,
+): Promise<T | null> {
+  try {
+    const r = getRedis();
+    const raw = await r.get(key);
+    if (raw === null) return null;
+    return JSON.parse(raw) as T;
+  } catch (err) {
+    console.warn(`[Redis cacheGet] Failed for key "${key}":`, err);
+    return null;
+  }
+}
+
+/**
+ * Cache set: store a value in Redis with TTL.
+ * Gracefully fails silently if Redis is unavailable.
+ */
+export async function cacheSet<T = unknown>(
+  key: string,
+  value: T,
+  ttlSeconds: number,
+): Promise<void> {
+  try {
+    const r = getRedis();
+    const serialized = JSON.stringify(value);
+    await r.setex(key, ttlSeconds, serialized);
+  } catch (err) {
+    console.warn(`[Redis cacheSet] Failed for key "${key}":`, err);
+  }
+}
+
+/**
+ * cacheWrap: get from cache or fetch and cache.
+ *
+ * @param key - Cache key
+ * @param ttlSeconds - Time-to-live in seconds
+ * @param fetcher - Async function to fetch data on cache miss
+ * @returns Cached or freshly-fetched value
+ */
+export async function cacheWrap<T = unknown>(
+  key: string,
+  ttlSeconds: number,
+  fetcher: () => Promise<T>,
+): Promise<T> {
+  // Try cache first
+  const cached = await cacheGet<T>(key);
+  if (cached !== null) {
+    return cached;
+  }
+
+  // Fetch fresh data
+  const fresh = await fetcher();
+
+  // Store in cache (fire-and-forget, don't block on failure)
+  cacheSet(key, fresh, ttlSeconds).catch(() => {
+    // Silently ignore — cache is best-effort
+  });
+
+  return fresh;
+}
+
+/**
  * Gracefully close the Redis connection.
  */
 export async function closeRedis(): Promise<void> {

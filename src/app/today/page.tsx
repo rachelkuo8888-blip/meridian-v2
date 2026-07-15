@@ -3,12 +3,16 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { useOnboardingStore } from '@/stores/onboarding';
-import { DailyInsight } from '@/components/today/daily-insight';
-import { CheckinCard } from '@/components/today/checkin-card';
-import { QuickAsk } from '@/components/today/quick-ask';
-import { StreakDisplay } from '@/components/today/streak-display';
+import dynamic from 'next/dynamic';
+import { usePageView } from '@/hooks/use-page-view';
+
+const DailyInsight = dynamic(() => import('@/components/today/daily-insight').then((m) => ({ default: m.DailyInsight })), { ssr: false });
+const CheckinCard = dynamic(() => import('@/components/today/checkin-card').then((m) => ({ default: m.CheckinCard })), { ssr: false });
+const QuickAsk = dynamic(() => import('@/components/today/quick-ask').then((m) => ({ default: m.QuickAsk })), { ssr: false });
+const StreakDisplay = dynamic(() => import('@/components/today/streak-display').then((m) => ({ default: m.StreakDisplay })), { ssr: false });
 
 export default function TodayPage() {
+  usePageView('today');
   const router = useRouter();
   const onboardingCompleted = useOnboardingStore((s) => s.onboardingCompleted);
 

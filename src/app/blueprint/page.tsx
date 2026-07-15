@@ -8,9 +8,13 @@
 
 import * as React from 'react'
 import type { ChartData } from '@/components/blueprint/types'
+import { usePageView } from '@/hooks/use-page-view'
+import { track } from '@/lib/analytics/tracker'
 import { FourPillars } from '@/components/blueprint/four-pillars'
-import { ZiWeiPalaces } from '@/components/blueprint/ziwei-palaces'
-import { ElementBars } from '@/components/blueprint/element-bars'
+import dynamic from 'next/dynamic'
+
+const ZiWeiPalaces = dynamic(() => import('@/components/blueprint/ziwei-palaces').then((m) => ({ default: m.ZiWeiPalaces })), { ssr: false })
+const ElementBars = dynamic(() => import('@/components/blueprint/element-bars').then((m) => ({ default: m.ElementBars })), { ssr: false })
 import { DaYunTimeline } from '@/components/blueprint/dayun-timeline'
 import { LiuNianDisplay } from '@/components/blueprint/liunian-display'
 import { Card } from '@/components/ui/card'
@@ -71,6 +75,7 @@ const MOCK_CHART: ChartData = {
 }
 
 export default function BlueprintPage() {
+  usePageView('blueprint')
   const [chart, setChart] = React.useState<ChartData | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [error] = React.useState<string | null>(null)
@@ -83,13 +88,16 @@ export default function BlueprintPage() {
           // Fall back to mock data if calc engine unavailable
           console.warn('Calc Engine unavailable, using mock data')
           setChart(MOCK_CHART)
+          track('chart_view', { source: 'mock' })
           return
         }
         const data = await res.json()
         setChart(data)
+        track('chart_view', { source: 'api' })
       } catch {
         console.warn('Calc Engine unavailable, using mock data')
         setChart(MOCK_CHART)
+        track('chart_view', { source: 'mock-error' })
       } finally {
         setLoading(false)
       }
@@ -149,19 +157,23 @@ export default function BlueprintPage() {
         {natal.ziwei && (
           <>
             <Separator className="my-4" />
-            <ZiWeiPalaces ziwei={natal.ziwei} />
+            <React.Suspense fallback={<div className="h-32 animate-pulse rounded bg-meridian-smoke" />}>
+              <ZiWeiPalaces ziwei={natal.ziwei} />
+            </React.Suspense>
           </>
         )}
       </Card>
 
       {/* 6.2: Elemental Composition */}
       <Card variant="ivory" padding="md" className="mb-4">
-        <ElementBars
-          distribution={natal.element_distribution}
-          dayMaster={natal.day_master}
-          strength={natal.strength}
-          usefulGod={natal.useful_god}
-        />
+        <React.Suspense fallback={<div className="h-32 animate-pulse rounded bg-meridian-smoke" />}>
+          <ElementBars
+            distribution={natal.element_distribution}
+            dayMaster={natal.day_master}
+            strength={natal.strength}
+            usefulGod={natal.useful_god}
+          />
+        </React.Suspense>
       </Card>
 
       {/* 6.3: Da Yun Timeline + Liu Nian */}

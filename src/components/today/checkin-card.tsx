@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { useCheckinStore, type Mood, type Tag, MOOD_TAGS } from '@/stores/checkin';
+import { track } from '@/lib/analytics/tracker';
 
 interface CheckinCardProps {
   className?: string;
@@ -92,6 +93,14 @@ export function CheckinCard({ className }: CheckinCardProps) {
 
   const handleTagToggle = (tag: Tag) => {
     toggleTag(tag);
+    // Track check-in completion when tags are selected (auto-completes)
+    const newTags = selectedTags.includes(tag)
+      ? selectedTags.filter((t) => t !== tag)
+      : [...selectedTags, tag];
+    // Will be completed after toggle (newTags has items)
+    if (!selectedTags.includes(tag) && newTags.length > 0) {
+      track('checkin_complete', { mood: selectedMood, tags: newTags });
+    }
   };
 
   // If check-in is done, collapse

@@ -1,0 +1,13 @@
+{
+  "name": "Meridian - Your Daily Energy Guide",
+  "short_name": "Meridian",
+  "description": "Discover your daily energy patterns with AI-powered Chinese metaphysics",
+  "start_url": "/today",
+  "display": "standalone",
+  "background_color": "#0D0D0D",
+  "theme_color": "#C4A96B",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

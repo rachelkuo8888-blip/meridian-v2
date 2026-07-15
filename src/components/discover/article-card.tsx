@@ -13,7 +13,7 @@ interface ArticleCardProps {
   className?: string
 }
 
-export function ArticleCard({ article, className }: ArticleCardProps) {
+export const ArticleCard = React.memo(function ArticleCard({ article, className }: ArticleCardProps) {
   const badgeColor = CATEGORY_COLORS[article.category] ?? '#C4A96B'
 
   return (
@@ -59,4 +59,4 @@ export function ArticleCard({ article, className }: ArticleCardProps) {
       </Card>
     </Link>
   )
-}
+})

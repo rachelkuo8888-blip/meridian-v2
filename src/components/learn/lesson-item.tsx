@@ -17,7 +17,7 @@ interface LessonItemProps {
 /**
  * Single lesson row showing status (not started / in progress / completed).
  */
-export function LessonItem({ pathId, lessonId, title, duration, isQuiz = false }: LessonItemProps) {
+export const LessonItem = React.memo(function LessonItem({ pathId, lessonId, title, duration, isQuiz = false }: LessonItemProps) {
   const router = useRouter()
   const isCompleted = useLearnStore((s) => s.isLessonCompleted(pathId, lessonId))
 
@@ -63,4 +63,4 @@ export function LessonItem({ pathId, lessonId, title, duration, isQuiz = false }
       </span>
     </button>
   )
-}
+})

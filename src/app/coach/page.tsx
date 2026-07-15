@@ -1,8 +1,11 @@
 'use client';
 
 import * as React from 'react';
+import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { usePageView } from '@/hooks/use-page-view';
+
+const CoachChatInput = dynamic(() => import('@/components/coach/chat-input').then((m) => ({ default: m.CoachChatInput })), { ssr: false });
 
 // ─── Sample entries ───
 
@@ -85,9 +88,9 @@ function UserChatBubble({ text, time }: { text: string; time: string }) {
 // ─── Inner content (needs Suspense for useSearchParams) ───
 
 function CoachContent() {
+  usePageView('coach');
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q');
-  const [inputValue, setInputValue] = React.useState(initialQuery ?? '');
 
   return (
     <div className="min-h-screen bg-meridian-ivory flex flex-col">
@@ -137,34 +140,10 @@ function CoachContent() {
           ))}
       </div>
 
-      {/* Input bar */}
-      <div className="sticky bottom-0 px-5 py-4 bg-meridian-ivory border-t border-meridian-dust/20">
-        <div className="flex items-center gap-2 max-w-md mx-auto">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask Meridian anything..."
-            className={cn(
-              'flex-1 bg-surface border border-meridian-dust/30 rounded-lg px-4 py-3',
-              'font-sans text-sm text-meridian-ink placeholder:text-meridian-dust',
-              'focus:outline-none focus:border-meridian-gold/50 transition-colors',
-            )}
-          />
-          <button
-            type="button"
-            disabled={!inputValue.trim()}
-            className={cn(
-              'bg-meridian-ink text-meridian-ivory rounded-lg px-4 py-3',
-              'font-sans text-xs font-medium transition-opacity',
-              'hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed',
-              'focus:outline-none',
-            )}
-          >
-            Send
-          </button>
-        </div>
-      </div>
+      {/* Input bar — lazy loaded */}
+      <React.Suspense fallback={<div className="sticky bottom-0 px-5 py-4" />}>
+        <CoachChatInput initialQuery={initialQuery} />
+      </React.Suspense>
     </div>
   );
 }

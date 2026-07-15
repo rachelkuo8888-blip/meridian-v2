@@ -23,7 +23,7 @@ const QUERIES = [
  * Quick Ask Cards — two side-by-side cards that navigate to /coach
  * with a pre-filled question.
  */
-export function QuickAsk({ className }: QuickAskProps) {
+export const QuickAsk = React.memo(function QuickAsk({ className }: QuickAskProps) {
   const router = useRouter();
 
   return (
@@ -49,4 +49,4 @@ export function QuickAsk({ className }: QuickAskProps) {
       ))}
     </div>
   );
-}
+});
