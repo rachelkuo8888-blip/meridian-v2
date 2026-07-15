@@ -17,7 +17,7 @@ import type {
   CooldownState,
 } from './types';
 import { getCooldownState } from './trigger-engine';
-import type { SupabaseClient } from '@supabase/supabase-js';
+type SupabaseClient = ReturnType<typeof createClient>;
 import { createClient } from '@supabase/supabase-js';
 import { calcClient } from '@/lib/services/calc-client';
 import { getRedis } from '@/lib/redis';
@@ -226,7 +226,7 @@ export async function buildUserContext(userId: string): Promise<UserContext> {
 
 // ---- Fetch helpers ----
 
-async function fetchProfile(supabase: any, userId: string) {
+async function fetchProfile(supabase: SupabaseClient, userId: string) {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
@@ -236,7 +236,7 @@ async function fetchProfile(supabase: any, userId: string) {
   return data;
 }
 
-async function fetchNatalChart(supabase: any, userId: string) {
+async function fetchNatalChart(supabase: SupabaseClient, userId: string) {
   const { data, error } = await supabase
     .from('natal_charts')
     .select('*')
@@ -258,7 +258,7 @@ async function fetchNatalChart(supabase: any, userId: string) {
 }
 
 async function fetchDailyEnergy(
-  supabase: any,
+  supabase: SupabaseClient,
   userId: string,
 ) {
   try {
@@ -278,7 +278,7 @@ async function fetchDailyEnergy(
 }
 
 async function fetchRecentCheckins(
-  supabase: any,
+  supabase: SupabaseClient,
   userId: string,
 ) {
   const thirtyDaysAgo = new Date();
@@ -308,7 +308,7 @@ async function fetchRecentCheckins(
 }
 
 async function fetchStreak(
-  supabase: any,
+  supabase: SupabaseClient,
   userId: string,
 ) {
   const { data, error } = await supabase
