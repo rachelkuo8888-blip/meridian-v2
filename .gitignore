@@ -32,6 +32,26 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python services (managed separately)
+services/calculation/__pycache__/
+services/memory/__pycache__/
+*.pyc
+
+# Build artifacts
+/dist/
+/build/
 
 # vercel
 .vercel
