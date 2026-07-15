@@ -1,8 +1,15 @@
-import type { Metadata } from 'next'
-import { ThemeProvider } from 'next-themes'
-import { QueryClientProvider } from '@/lib/query-client'
-import { RootLayout } from '@/components/layout/root-layout'
-import './globals.css'
+import type { Metadata, Viewport } from 'next';
+import { ThemeProvider } from 'next-themes';
+import { QueryClientProvider } from '@/lib/query-client';
+import { RootLayout as AppShell } from '@/components/layout/root-layout';
+import './globals.css';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover',
+};
 
 export const metadata: Metadata = {
   title: {
@@ -42,24 +49,18 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    viewportFit: 'cover',
-  },
   // PWA manifest reference
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -83,10 +84,10 @@ export default function RootLayout({
           themes={['light', 'dark']}
         >
           <QueryClientProvider>
-            <RootLayout>{children}</RootLayout>
+            <AppShell>{children}</AppShell>
           </QueryClientProvider>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

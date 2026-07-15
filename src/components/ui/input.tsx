@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
 const inputVariants = cva(
   'flex w-full rounded-sm border bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-meridian-dust focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-meridian-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
@@ -25,12 +25,13 @@ const inputVariants = cva(
       size: 'md',
     },
   },
-)
+);
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement>,
+  extends
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof inputVariants> {
-  hasError?: boolean
+  hasError?: boolean;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -42,10 +43,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         {...props}
       />
-    )
+    );
   },
-)
-Input.displayName = 'Input'
+);
+Input.displayName = 'Input';
 
 /**
  * Label component that pairs with Input.
@@ -57,12 +58,12 @@ const Label = React.forwardRef<
   <label
     ref={ref}
     className={cn(
-      'mb-1 block text-sm font-medium text-meridian-ink',
+      'text-meridian-ink mb-1 block text-sm font-medium',
       className,
     )}
     {...props}
   />
-))
-Label.displayName = 'Label'
+));
+Label.displayName = 'Label';
 
-export { Input, Label, inputVariants }
+export { Input, Label, inputVariants };

@@ -1,13 +1,13 @@
-import { createServerClient as createSSRClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import type { RequestCookies } from 'next/dist/server/web/spec-extension/cookies'
+import { createServerClient as createSSRClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import type { RequestCookies } from 'next/dist/server/web/spec-extension/cookies';
 
 /**
  * Server-side Supabase client for App Router.
  * Uses SSR cookie-based auth for route handlers and server components.
  */
 export async function createServerSupabaseClient() {
-  const cookieStore = await cookies()
+  const cookieStore = await cookies();
 
   return createSSRClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,20 +15,20 @@ export async function createServerSupabaseClient() {
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll()
+          return cookieStore.getAll();
         },
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
-            )
+            cookiesToSet.forEach(({ name, value }) =>
+              cookieStore.set(name, value),
+            );
           } catch {
             // Called from Server Component — can ignore (middleware refresh handles it)
           }
         },
       },
     },
-  )
+  );
 }
 
 /**
@@ -42,14 +42,14 @@ export function createRouteHandlerClient(cookieStore: RequestCookies) {
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll()
+          return cookieStore.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
-          )
+          cookiesToSet.forEach(({ name, value }) =>
+            cookieStore.set(name, value),
+          );
         },
       },
     },
-  )
+  );
 }
