@@ -94,10 +94,19 @@ class EngineHandler(BaseHTTPRequestHandler):
                 self._send_json(400, {"error": f"Missing required field: {field}"})
                 return
 
+        # Normalize birth_hour: accept int, float, or "HH:MM" string
+        raw_hour = data.get("birth_hour")
+        if isinstance(raw_hour, str) and ":" in raw_hour:
+            birth_hour = int(raw_hour.split(":")[0])
+        elif raw_hour is not None:
+            birth_hour = int(raw_hour)
+        else:
+            birth_hour = None
+
         chart = generate_chart(
             user_id=data["user_id"],
             birth_date=data["birth_date"],
-            birth_hour=data.get("birth_hour"),
+            birth_hour=birth_hour,
             longitude=data.get("longitude"),
             timezone_std_longitude=data.get("timezone_std_longitude", 120.0),
             gender=data.get("gender"),
