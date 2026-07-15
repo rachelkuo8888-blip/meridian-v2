@@ -24,3 +24,48 @@
     font-family: var(--font-sans);
   }
 }
+
+@layer utilities {
+  .animate-page-in {
+    animation: pageIn 400ms ease-out both;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 600ms ease-out both;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 500ms ease-out both;
+  }
+
+  @keyframes pageIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

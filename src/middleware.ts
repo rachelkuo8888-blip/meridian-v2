@@ -8,6 +8,11 @@ import { createServerClient } from '@supabase/ssr';
  * - Redirects unauthenticated users to login for protected routes
  */
 export async function middleware(request: NextRequest) {
+  // Skip auth until Supabase is configured
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
